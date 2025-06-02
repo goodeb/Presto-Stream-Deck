@@ -1,0 +1,64 @@
+import json
+
+
+def color_converter(color):
+    """
+    """
+    if isinstance(color,str):
+        if color.lower() == 'black':
+            return 0, 0, 0
+        elif color.lower() == 'white':
+            return 255, 255, 255
+        elif color.lower() == 'red':
+            return 255, 0, 0
+        elif color.lower() == 'green':
+            return 0, 255, 0
+        elif color.lower() == 'blue':
+            return 0, 0, 255
+        elif color.lower() == 'yellow':
+            return 255, 255, 0
+        elif color.lower() == 'magenta':
+            return 255, 0, 255
+        elif color.lower() == 'aqua':
+            return 0, 255, 255
+        else:
+            print(f'Unknown color: {color}. Defaulting to white.')
+            return 255, 255, 255
+    elif isinstance(color,tuple) or isinstance(color,list):
+        return color[0], color[1], color[2]
+    else:
+        return 255, 255, 255
+
+def show_message(board_obj,label):
+    r,g,b = color_converter('black')
+    board_obj.display.set_pen(board_obj.display.create_pen(r,g,b))
+    board_obj.display.clear()
+    r,g,b = color_converter('white')
+    board_obj.display.set_pen(board_obj.display.create_pen(r,g,b))
+    display_width, display_height = board_obj.display.get_bounds()
+    board_obj.display.text(label, 5, 10, display_width-10, 6)
+    board_obj.update()
+ 
+def connect_wifi(board_obj):
+    try:
+        wifi = board_obj.connect()
+        return wifi
+    except ValueError as e:
+        while True:
+            show_message(e)
+    except ImportError as e:
+        while True:
+            show_message(e)
+
+def read_input_file(json_file):
+    with open(json_file,'r') as file:
+        init_data = json.load(file)
+        margin_ratio = init_data.pop("margin_ratio")
+        font_file = init_data.pop("font_file")
+        background_color = init_data.pop("background_color")
+        buttons_defs = init_data.pop("buttons_defs")
+        other_vars = init_data
+        if other_vars.get('buzzer_pin'):
+            from presto import Buzzer
+            other_vars['buzzer'] = Buzzer(other_vars.pop('buzzer_pin'))
+        return buttons_defs, margin_ratio, background_color, font_file,other_vars
