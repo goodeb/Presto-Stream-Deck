@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: 2025 Brent Goode
-# SPDX-License-Identigier: MIT
+# SPDX-License-Identifier: MIT
 
 """
 ButtonSet.py 2025-06-02 v 1.0
 
 Author: Brent Goode
 
-Class libraries for ...
+Class libraries for ButtonSet and FunctionButton objects
 
 """
 
@@ -17,7 +17,7 @@ from pngdec import PNG
 from utils import color_converter
 
 class ButtonSet:
-    """a collection of FunctionButton objects with addresses and dynamically calculated sizes"""
+    """A collection of FunctionButton objects with addresses and dynamically calculated sizes"""
     current_page = 0
     max_page = 0
     min_page = 0
@@ -97,7 +97,7 @@ class ButtonSet:
                                                                   this_buttons_info.get('arg'))
         ButtonSet.buttons = self.ButtonSet
 
-    def touch_to_buton_address(self) -> tuple | None:
+    def touch_to_button_address(self) -> tuple | None:
         """
         Converts a touch on the screen to the button address tuple
         or None if touch outside all buttons
@@ -136,15 +136,20 @@ class ButtonSet:
                 button_address = (ButtonSet.current_page,button.row,button.column)
 
         if button_address and self.ButtonSet[button_address].fn:
-            if list is type(self.ButtonSet[button_address].arg):# TODO figureout a more elegant solution
+            if list is type(self.ButtonSet[button_address].arg):# TODO figure out a more elegant solution
                 return self.ButtonSet[button_address].fn(*self.ButtonSet[button_address].arg)
             else:
                 return self.ButtonSet[button_address].fn(self.ButtonSet[button_address].arg)
     
     def get_button_obj(address):
         """
+        Returns the FunctionButton object at address to allow another function to modify it
+        Args:
+            address: a tuple with three integers giving page, row, and column
+        Returns:
+            a FunctionButton object or None
         """
-        return ButtonSet.buttons[address]
+        return ButtonSet.buttons.get(address)
 
     def get_a_page(self,page_number: int) -> list:
         """
@@ -181,8 +186,8 @@ class ButtonSet:
         self.board_obj.update()
 
 class FunctionButton(Button):
-    """ an extension to the Button class to link a button to a function,
-        draw a rounded rectangle, add text, and an image"""
+    """ An extension to the Button class to link a button to a function,
+        draw a rounded rectangle, add text, and add an image"""
 
     def __init__(self,
                  x: int,
@@ -243,7 +248,7 @@ class FunctionButton(Button):
             self.label_color = self.display.create_pen(r,g,b)
 
         if symbol:
-            self.symbol_path = f'/Art/{symbol}'
+            self.symbol_path = f'/art/{symbol}'
         else:
             self.symbol_path = None
 
@@ -253,16 +258,15 @@ class FunctionButton(Button):
             except:
                 try:
                     self.fn = getattr(ButtonSet,fn_name)
-                except:
-                    # TODO raise a proper exception
+                except Exception as exc:
                     print(f'There is no function named {fn_name}.')
+                    print(exc)
                     self.fn = None
         else:
             self.fn = None
 
     def draw_button(self):
-        """
-        """
+        """Draws the elements of a Function button with correctly scaled symbol and text"""
         vector = PicoVector(self.display)
         if self.symbol_path:
             try:
@@ -270,10 +274,12 @@ class FunctionButton(Button):
                 try:
                     png.open_file(self.symbol_path)
                     png.decode(int(self.x+0.5*self.width-0.5*png.get_width()), int(self.y+0.5*self.height-0.5*png.get_height()))
-                except: #TODO proper exception
+                except Exception as exc:
                     print(f"No image file called {self.symbol_path} found.")
-            except: #TODO proper exception
+                    print(exc)
+            except Exception as exc:
                 print(f"image file {self.symbol_path} not found")
+                print(exc)
             
         if self.label:
             self.display.set_pen(self.label_color)
@@ -290,14 +296,12 @@ class FunctionButton(Button):
         vector.draw(shape)
 
     def redraw_button(self):
-        """
-        """
+        """Redraws a single button after some aspect of its appearance has been updated"""
         self.draw_button()
         self.board_obj.partial_update(int(self.x), int(self.y), int(self.width), int(self.height))
 
     def just_pressed(self):
-        """
-        """
+        """Returns True once and only once when a button transitions from not touched to touched"""
         self.touch.poll()
         if self.is_pressed():
             if not self.depressed:
@@ -309,8 +313,7 @@ class FunctionButton(Button):
             self.depressed = False
 
     def just_released(self):
-        """
-        """
+        """Returns True once and only once when a button transitions from touched to not touched"""
         self.touch.poll()
         if not self.is_pressed():
             if self.depressed:

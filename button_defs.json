@@ -1,9 +1,6 @@
 {  "margin_ratio":0.1,
    "font_file":"OpenSans-Regular.af",
    "background_color":"black",
-   "LMS_server":"192.168.1.88",
-   "LMS_port":9000,
-   "player":"Office",
    "buzzer_pin":43,
    "buttons_defs":[{
         "name":"Red",

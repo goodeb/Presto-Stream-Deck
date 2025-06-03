@@ -1,8 +1,21 @@
+# SPDX-FileCopyrightText: 2025 Brent Goode
+# SPDX-License-Identifier: MIT
+
+"""
+utils.py 2025-06-02 v 1.0
+
+Author: Brent Goode
+
+Utility functions for the stream deck project
+
+"""
+
 import json
 
 
 def color_converter(color):
-    """
+    """Takes a variety of color imports and converts them to r,g,b values 
+        for use as inputs to Pimoroni pico display.create_pen() method
     """
     if isinstance(color,str):
         if color.lower() == 'black':
@@ -30,6 +43,8 @@ def color_converter(color):
         return 255, 255, 255
 
 def show_message(board_obj,label):
+    """Sets the screen of a Pimoroni pico device to show the text given by label.
+        Useful for start up or other error messages"""
     r,g,b = color_converter('black')
     board_obj.display.set_pen(board_obj.display.create_pen(r,g,b))
     board_obj.display.clear()
@@ -40,6 +55,7 @@ def show_message(board_obj,label):
     board_obj.update()
  
 def connect_wifi(board_obj):
+    """Connects a Pimoroni pico device to wifi and handles errors"""
     try:
         wifi = board_obj.connect()
         return wifi
@@ -51,6 +67,8 @@ def connect_wifi(board_obj):
             show_message(e)
 
 def read_input_file(json_file):
+    """Reads the json input file for a presto-steam-deck project and parses 
+        data into the correct form including custom vars for that project"""
     with open(json_file,'r') as file:
         init_data = json.load(file)
         margin_ratio = init_data.pop("margin_ratio")

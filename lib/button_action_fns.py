@@ -1,19 +1,21 @@
 # SPDX-FileCopyrightText: 2025 Brent Goode
-# SPDX-License-Identigier: MIT
+# SPDX-License-Identifier: MIT
 
 """
 button_action_functions.py 2025-06-02 v 1.0
 
 Author: Brent Goode
 
-File containing the functions that are called when a screen button is pressed
+File containing the functions that are called when a screen button is pressed.
+This is how the custom functionality for each set up is implemented
 
 """
 
 from utils import color_converter
 
 def initialize_other_vars(kwargs):
-    """"""
+    """Required function to receive custom variables for a particular setup
+        as received from button_defs.json"""
     other_vars = kwargs.get('other_vars')
     if other_vars:
         for var_name, var_value in other_vars.items():
@@ -38,27 +40,32 @@ def jump_to_page(page_number: int,*arg):
         ButtonSet.needs_redrawing = True
 
 def light_backlight(color: str | list | tuple | None = None,* arg) -> None:
+    """Lights Presto backlight to the color given by color"""
     r,g,b = color_converter(color)
     for i in range(7):
         board_obj.set_led_rgb(i,r,g,b)
 
 def sound_buzzer(tone: int,*arg):
+    """Sounds the buzzer hardware object"""
     buzzer.set_tone(tone)
 
 def add_one_to_label(address,*arg):
+    """Increments the label of a button at address and redraws"""
     address = tuple([int(i) for i in address.split(',')])
     this_button = ButtonSet.get_button_obj(address)
     this_button.label = str(int(this_button.label)+1)
     this_button.redraw_button()
     
 def add_amount_to_label(address,amount,*arg):
+    """Changes the label of a button at address by amount and redraws"""
     address = tuple([int(i) for i in address.split(',')])
     this_button = ButtonSet.get_button_obj(address)
     this_button.label = str(int(this_button.label)+amount)
     this_button.redraw_button()
 
-def set_label(address,number,*arg):
+def set_label(address,text,*arg):
+    """Sets the label of a button to be the input text and redraws"""
     address = tuple([int(i) for i in address.split(',')])
     this_button = ButtonSet.get_button_obj(address)
-    this_button.label = str(number)
+    this_button.label = str(text)
     this_button.redraw_button()

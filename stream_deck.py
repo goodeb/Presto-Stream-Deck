@@ -1,9 +1,20 @@
 # ICON []
 # NAME Stream Deck
-# DESC App to turn the Presto into a easily cusomizable stream deck
+# DESC App to turn the Presto into a easily customizable stream deck
+# SPDX-FileCopyrightText: 2025 Brent Goode
+# SPDX-License-Identifier: MIT
+
+"""
+ButtonSet.py 2025-06-02 v 1.0
+
+Author: Brent Goode
+
+Class libraries for ButtonSet and FunctionButton objects
+
+"""
 
 from presto import Presto
-from ButtonSet import ButtonSet
+from button_set import ButtonSet
 from utils import show_message, connect_wifi, read_input_file
 
 presto = Presto(full_res=True)
