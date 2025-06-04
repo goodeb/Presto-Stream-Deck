@@ -1,5 +1,6 @@
 {  "margin_ratio":0.1,
-   "font_file":"OpenSans-Regular.af",
+   "default_font":"OpenSans-Regular.af",
+   "default_color":"white",
    "background_color":"black",
    "buzzer_pin":43,
    "buttons_defs":[{

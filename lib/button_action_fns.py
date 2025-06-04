@@ -12,10 +12,12 @@ This is how the custom functionality for each set up is implemented
 """
 
 from utils import color_converter
+import urequests
+import json
 
 def initialize_other_vars(kwargs):
-    """Required function to receive custom variables for a particular setup
-        as received from button_defs.json"""
+    """Required function to pass custom variables for a particular setup
+        as defined button_defs.json"""
     other_vars = kwargs.get('other_vars')
     if other_vars:
         for var_name, var_value in other_vars.items():
@@ -57,7 +59,7 @@ def add_one_to_label(address,*arg):
     this_button.redraw_button()
     
 def add_amount_to_label(address,amount,*arg):
-    """Changes the label of a button at address by amount and redraws"""
+    """Changes the number label of a button at address by amount and redraws"""
     address = tuple([int(i) for i in address.split(',')])
     this_button = ButtonSet.get_button_obj(address)
     this_button.label = str(int(this_button.label)+amount)
@@ -69,3 +71,25 @@ def set_label(address,text,*arg):
     this_button = ButtonSet.get_button_obj(address)
     this_button.label = str(text)
     this_button.redraw_button()
+
+def http_post(url,query_data,*arg):
+    """
+    """
+    try:
+        req = urequests.post(url, json = query_data)
+        result_data = json.loads(req.content.decode("utf-8"))
+        print(result_data)
+    except Exception as exc:
+        print(exc)
+
+def http_get(url,query_data,*arg):
+    """
+    """
+    try:
+        req = urequests.post(url, json = query_data)
+        result_data = json.loads(req.content.decode("utf-8"))
+        print(result_data)
+    except Exception as exc:
+        print(exc)
+
+

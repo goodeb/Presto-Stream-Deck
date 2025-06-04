@@ -28,8 +28,9 @@ class ButtonSet:
                  buttons_defs: list[dict] | None = None,
                  board_obj: None = None,
                  margin_ratio: float | None = 0.1,
-                 background_color: str | list | tuple | None = None,
-                 font_file: str | None = None,
+                 default_color: str | list | tuple | None = 'white',
+                 background_color: str | list | tuple | None = 'black',
+                 default_font: str | None = None,
                  **kwargs):
         """
         """
@@ -87,8 +88,9 @@ class ButtonSet:
                                                                   this_buttons_info.get('name'),
                                                                   gap,
                                                                   this_buttons_info.get('label'),
-                                                                  font_file,
+                                                                  default_font,
                                                                   this_buttons_info.get('label_font'),
+                                                                  default_color,
                                                                   this_buttons_info.get('color'),
                                                                   this_buttons_info.get('outline_color'),
                                                                   this_buttons_info.get('label_color'),
@@ -200,8 +202,9 @@ class FunctionButton(Button):
                  name: str | None = None,
                  radius: int = 0,
                  label: str | None = None,
-                 font_file: str | None = None,
+                 default_font: str | None = None,
                  label_font: str | None = None,
+                 default_color: str | tuple | list | None = 'white',
                  color: str | tuple | list | None = None,
                  outline_color: str | tuple | list | None = None,
                  label_color: str | tuple | list | None = None,
@@ -228,25 +231,33 @@ class FunctionButton(Button):
         self.label = label
         self.depressed = False
 
-        if font_file:
-            self.label_font = font_file
+        if default_font:
+            self.label_font = f'/art/{default_font}'
+        elif label_font:
+            self.label_font = f'/art/{label_font}'
         else:
-            self.label_font = label_font            
+            self.label_font = None
         
         if outline_color:
             r,g,b = color_converter(outline_color)
             self.outline_color = self.display.create_pen(r,g,b)
-        else:
+        elif color:
             r,g,b = color_converter(color)
             self.outline_color = self.display.create_pen(r,g,b)
-
+        else:
+            r,g,b = color_converter(default_color)
+            self.outline_color = self.display.create_pen(r,g,b)
+        
         if label_color:
             r,g,b = color_converter(label_color)
             self.label_color = self.display.create_pen(r,g,b)
-        else:
+        elif color:
             r,g,b = color_converter(color)
             self.label_color = self.display.create_pen(r,g,b)
-
+        else:
+            r,g,b = color_converter(default_color)
+            self.outline_color = self.display.create_pen(r,g,b)
+        
         if symbol:
             self.symbol_path = f'/art/{symbol}'
         else:
@@ -278,7 +289,7 @@ class FunctionButton(Button):
                     print(f"No image file called {self.symbol_path} found.")
                     print(exc)
             except Exception as exc:
-                print(f"image file {self.symbol_path} not found")
+                print(f"Image file {self.symbol_path} not found")
                 print(exc)
             
         if self.label:

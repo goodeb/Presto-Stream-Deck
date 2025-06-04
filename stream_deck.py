@@ -1,4 +1,4 @@
-# ICON []
+# ICON [[(-20.0,-20.0),(-2.0,-20.0),(-2.0,-2.0),(-20.0,-2.0),(-20.0,-20.0)],[(-18.0,-18.0),(-4.0,-18.0),(-4.0,-4.0),(-18.0,-4.0),(-18.0,-18.0)],[(20.0,-20.0),(2.0,-20.0),(2.0,-2.0),(20.0,-2.0),(20.0,-20.0)],[(18.0,-18.0),(4.0,-18.0),(4.0,-4.0),(18.0,-4.0),(18.0,-18.0)],[(-20.0,20.0),(-2.0,20.0),(-2.0,2.0),(-20.0,2.0),(-20.0,20.0)],[(-18.0,18.0),(-4.0,18.0),(-4.0,4.0),(-18.0,4.0),(-18.0,18.0)],[(20.0,20.0),(2.0,20.0),(2.0,2.0),(20.0,2.0),(20.0,20.0)],[(18.0,18.0),(4.0,18.0),(4.0,4.0),(18.0,4.0),(18.0,18.0)]]
 # NAME Stream Deck
 # DESC App to turn the Presto into a easily customizable stream deck
 # SPDX-FileCopyrightText: 2025 Brent Goode
@@ -17,15 +17,15 @@ from presto import Presto
 from button_set import ButtonSet
 from utils import show_message, connect_wifi, read_input_file
 
-presto = Presto(full_res=True)
+board_obj = Presto(full_res=True)
 
-show_message(presto,"Loading...")
+show_message(board_obj,"Loading...")
 
-wifi = connect_wifi(presto)
+wifi = connect_wifi(board_obj)
 
-buttons_defs, margin_ratio, background_color, font_file, other_vars = read_input_file('button_defs.json')
+buttons_defs, margin_ratio, default_color, background_color, default_font, other_vars = read_input_file('button_defs.json')
 
-buttons = ButtonSet(buttons_defs,presto,margin_ratio,background_color,font_file,other_vars=other_vars)
+buttons = ButtonSet(buttons_defs,board_obj,margin_ratio,default_color,background_color,default_font,other_vars=other_vars)
 
 buttons.redraw_page()
 
