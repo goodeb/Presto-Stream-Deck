@@ -23,9 +23,16 @@ show_message(board_obj,"Loading...")
 
 wifi = connect_wifi(board_obj)
 
-buttons_defs, margin_ratio, default_color, background_color, default_font, other_vars = read_input_file('button_defs.json')
+buttons_defs, margin_ratio, default_color, background_color, \
+    default_font, other_vars = read_input_file('button_defs.json')
 
-buttons = ButtonSet(buttons_defs,board_obj,margin_ratio,default_color,background_color,default_font,other_vars=other_vars)
+buttons = ButtonSet(buttons_defs,
+                    board_obj,
+                    margin_ratio,
+                    default_color,
+                    background_color,
+                    default_font,
+                    other_vars=other_vars)
 
 buttons.redraw_page()
 

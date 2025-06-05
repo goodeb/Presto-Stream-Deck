@@ -45,11 +45,9 @@ def color_converter(color):
 def show_message(board_obj,label):
     """Sets the screen of a Pimoroni pico device to show the text given by label.
         Useful for start up or other error messages"""
-    r,g,b = color_converter('black')
-    board_obj.display.set_pen(board_obj.display.create_pen(r,g,b))
+    board_obj.display.set_pen(board_obj.display.create_pen(*color_converter('black')))
     board_obj.display.clear()
-    r,g,b = color_converter('white')
-    board_obj.display.set_pen(board_obj.display.create_pen(r,g,b))
+    board_obj.display.set_pen(board_obj.display.create_pen(*color_converter('white')))
     display_width, display_height = board_obj.display.get_bounds()
     board_obj.display.text(label, 5, 10, display_width-10, 6)
     board_obj.update()

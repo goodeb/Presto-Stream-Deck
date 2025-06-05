@@ -86,7 +86,7 @@ def http_get(url,query_data,*arg):
     """
     """
     try:
-        req = urequests.post(url, json = query_data)
+        req = urequests.get(url, json = query_data)
         result_data = json.loads(req.content.decode("utf-8"))
         print(result_data)
     except Exception as exc:

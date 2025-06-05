@@ -138,7 +138,7 @@ class ButtonSet:
                 button_address = (ButtonSet.current_page,button.row,button.column)
 
         if button_address and self.ButtonSet[button_address].fn:
-            if list is type(self.ButtonSet[button_address].arg):# TODO figure out a more elegant solution
+            if list is type(self.ButtonSet[button_address].arg):
                 return self.ButtonSet[button_address].fn(*self.ButtonSet[button_address].arg)
             else:
                 return self.ButtonSet[button_address].fn(self.ButtonSet[button_address].arg)
@@ -179,8 +179,7 @@ class ButtonSet:
         return return_list
 
     def redraw_page(self):
-        r,g,b = color_converter(self.background_color)
-        self.display.set_pen(self.display.create_pen(r,g,b))
+        self.display.set_pen(self.display.create_pen(*color_converter(self.background_color)))
         self.display.clear()
         current_page = self.get_current_page()
         for button in current_page:
@@ -239,24 +238,19 @@ class FunctionButton(Button):
             self.label_font = None
         
         if outline_color:
-            r,g,b = color_converter(outline_color)
-            self.outline_color = self.display.create_pen(r,g,b)
+            self.outline_color = self.display.create_pen(*color_converter(outline_color))
         elif color:
-            r,g,b = color_converter(color)
-            self.outline_color = self.display.create_pen(r,g,b)
+            self.outline_color = self.display.create_pen(*color_converter(color))
         else:
-            r,g,b = color_converter(default_color)
-            self.outline_color = self.display.create_pen(r,g,b)
+            self.outline_color = self.display.create_pen(*color_converter(default_color)
+            )
         
         if label_color:
-            r,g,b = color_converter(label_color)
-            self.label_color = self.display.create_pen(r,g,b)
+            self.label_color = self.display.create_pen(*color_converter(label_color))
         elif color:
-            r,g,b = color_converter(color)
-            self.label_color = self.display.create_pen(r,g,b)
+            self.label_color = self.display.create_pen(*color_converter(color))
         else:
-            r,g,b = color_converter(default_color)
-            self.outline_color = self.display.create_pen(r,g,b)
+            self.outline_color = self.display.create_pen(*color_converter(default_color))
         
         if symbol:
             self.symbol_path = f'/art/{symbol}'
@@ -297,7 +291,7 @@ class FunctionButton(Button):
             if self.label_font:
                 vector.set_font(self.label_font, int(0.33*self.height))
             text_x, text_y, text_width, text_height = vector.measure_text(self.label)
-            if text_width > 0.9*self.width: #TODO see about using the fourth arg 'wordwrap'
+            if text_width > 0.9*self.width:
                 vector.set_font(self.label_font, int(0.9*self.width/text_width*0.33*self.height))
                 text_x, text_y, text_width, text_height = vector.measure_text(self.label)
             vector.text(self.label, int(self.x+0.5*self.width-text_x-0.5*text_width), int(self.y+0.5*self.height+text_y+0.5*text_height))
