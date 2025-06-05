@@ -74,7 +74,4 @@ def read_input_file(json_file):
         background_color = init_data.pop("background_color")
         buttons_defs = init_data.pop("buttons_defs")
         other_vars = init_data
-        if other_vars.get('buzzer_pin'):
-            from presto import Buzzer
-            other_vars['buzzer'] = Buzzer(other_vars.pop('buzzer_pin'))
         return buttons_defs, margin_ratio, background_color, font_file,other_vars

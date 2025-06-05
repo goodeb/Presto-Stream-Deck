@@ -16,11 +16,17 @@ import urequests
 import json
 
 def initialize_other_vars(kwargs):
-    """Required function to pass custom variables for a particular setup
-        as defined button_defs.json"""
+    """"""
     other_vars = kwargs.get('other_vars')
+    
+    if other_vars.get('buzzer_pin'):
+        from presto import Buzzer
+        global buzzer
+        buzzer = Buzzer(other_vars.pop('buzzer_pin'))
+    
     if other_vars:
         for var_name, var_value in other_vars.items():
+            print("assigning",var_name)
             globals()[var_name]=var_value
 
 def next_page(*arg):
@@ -51,11 +57,11 @@ def sound_buzzer(tone: int,*arg):
     """Sounds the buzzer hardware object"""
     buzzer.set_tone(tone)
 
-def add_one_to_label(address,*arg):
-    """Increments the label of a button at address and redraws"""
+def cycle_color(address,*arg):
     address = tuple([int(i) for i in address.split(',')])
     this_button = ButtonSet.get_button_obj(address)
-    this_button.label = str(int(this_button.label)+1)
+    color_cycle.append(color_cycle.pop(0))
+    this_button.outline_color = board_obj.display.create_pen(*color_converter(color_cycle[0]))
     this_button.redraw_button()
     
 def add_amount_to_label(address,amount,*arg):

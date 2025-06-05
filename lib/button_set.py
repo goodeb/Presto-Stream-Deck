@@ -40,7 +40,6 @@ class ButtonSet:
         self.display = board_obj.display
         
         button_action_fns.board_obj = board_obj
-        #button_action_fns.buzzer = buzzer
         button_action_fns.ButtonSet = ButtonSet
         
         button_action_fns.initialize_other_vars(kwargs)

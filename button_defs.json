@@ -3,6 +3,7 @@
    "default_color":"white",
    "background_color":"black",
    "buzzer_pin":43,
+   "color_cycle":["white","red","blue","green"],
    "buttons_defs":[{
         "name":"Red",
         "page":0,
@@ -127,7 +128,6 @@
         "page":1,
         "row":1,
         "column":0,
-        "label":null,
         "color":"black"
     },
     {
@@ -153,7 +153,6 @@
         "page":2,
         "row":0,
         "column":0,
-        "label":null,
         "color":"black"
     },
     {
@@ -171,7 +170,6 @@
         "page":2,
         "row":0,
         "column":2,
-        "label":null,
         "color":"black"
     },
     {
@@ -230,6 +228,5 @@
         "page":2,
         "row":2,
         "column":2,
-        "label":null,
         "color":"black"
     }]}
