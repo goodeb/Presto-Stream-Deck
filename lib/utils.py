@@ -69,9 +69,10 @@ def read_input_file(json_file):
         data into the correct form including custom vars for that project"""
     with open(json_file,'r') as file:
         init_data = json.load(file)
-        margin_ratio = init_data.pop("margin_ratio")
-        font_file = init_data.pop("font_file")
-        background_color = init_data.pop("background_color")
         buttons_defs = init_data.pop("buttons_defs")
+        margin_ratio = init_data.pop("margin_ratio",0.1)
+        background_color = init_data.pop("background_color",None)
+        font_file = init_data.pop("font_file",None)
+        corner_radius = init_data.pop("corner_radius",None)
         other_vars = init_data
-        return buttons_defs, margin_ratio, background_color, font_file,other_vars
+        return buttons_defs, margin_ratio, background_color, font_file, corner_radius, other_vars

@@ -45,6 +45,7 @@ In addition to the button specific definitions, some other general definitions a
 * default_color: The default color of text labels and buttons. This can be overridden for each button in its definition.
 * background_color: The screen background color
 * default_font: The default font for all label text. This can be overridden for each button in its definition.
+* corner_radius: The curvature radius of the corners of the rounded rectangles drawn around each button. If 0 there will be square corners. If not given, the radius will default to the same as the gap between buttons calculated from margin_ratio.
 
 It is also possible to also define custom variables that will be accessible to all the button action functions in this area. An example of how this works is shown by the ``color_cycle`` definition. This variable gets declared as Global in button_action_function.py and is used by the ``color_cycle()`` function. Triggering this action is done withe center button on the third page, the one with the heard icon.
 

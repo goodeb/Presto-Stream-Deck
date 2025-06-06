@@ -31,6 +31,7 @@ class ButtonSet:
                  default_color: str | list | tuple | None = 'white',
                  background_color: str | list | tuple | None = 'black',
                  default_font: str | None = None,
+                 corner_radius: int | None = None,
                  **kwargs):
         """
         """
@@ -50,7 +51,7 @@ class ButtonSet:
             self.background_color = background_color
         else:
             self.background_color = "black"
-        
+            
         if buttons_defs:
             buttons_seen = {}
             self.ButtonSet = {}
@@ -71,6 +72,8 @@ class ButtonSet:
                 n = len(buttons_seen[page])
                 button_height = display_height/(n + margin_ratio*n + margin_ratio)
                 gap = button_height * margin_ratio
+                if not corner_radius:
+                    corner_radius = gap
                 for row in buttons_seen[page]:
                     m = len(buttons_seen[page][row])
                     button_width = (display_width - (m+1)*gap)/m
@@ -85,7 +88,7 @@ class ButtonSet:
                                                                   column,
                                                                   board_obj,
                                                                   this_buttons_info.get('name'),
-                                                                  gap,
+                                                                  corner_radius,
                                                                   this_buttons_info.get('label'),
                                                                   default_font,
                                                                   this_buttons_info.get('label_font'),
