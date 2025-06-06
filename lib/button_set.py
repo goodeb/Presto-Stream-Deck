@@ -84,8 +84,7 @@ class ButtonSet:
                                                                   gap*(row+1)+row*button_height,
                                                                   button_width,
                                                                   button_height,
-                                                                  row,
-                                                                  column,
+                                                                  address,
                                                                   board_obj,
                                                                   this_buttons_info.get('name'),
                                                                   corner_radius,
@@ -100,7 +99,7 @@ class ButtonSet:
                                                                   this_buttons_info.get('fn'),
                                                                   this_buttons_info.get('arg'))
         ButtonSet.buttons = self.ButtonSet
-
+        
     def touch_to_button_address(self) -> tuple | None:
         """
         Converts a touch on the screen to the button address tuple
@@ -112,7 +111,7 @@ class ButtonSet:
         """
         for button in self.get_current_page():
             if button.just_pressed():
-                return(ButtonSet.current_page,button.row,button.column)
+                return button.address
         return None
 
     def run_addressed_button(self, address:tuple):
@@ -124,7 +123,10 @@ class ButtonSet:
             whatever the triggered function returns
         """
         if self.ButtonSet[address].fn:
-            return self.ButtonSet[address].fn(*self.ButtonSet[address].arg)
+            if list is type(button.arg):
+                return self.ButtonSet[address].fn(*self.ButtonSet[address].arg)
+            else:
+                return self.ButtonSet[address].fn(self.ButtonSet[address].arg)
 
     def touch_to_action(self) -> None:
         """
@@ -137,13 +139,11 @@ class ButtonSet:
         button_address = None
         for button in self.get_current_page():
             if button.just_pressed():
-                button_address = (ButtonSet.current_page,button.row,button.column)
-
-        if button_address and self.ButtonSet[button_address].fn:
-            if list is type(self.ButtonSet[button_address].arg):
-                return self.ButtonSet[button_address].fn(*self.ButtonSet[button_address].arg)
-            else:
-                return self.ButtonSet[button_address].fn(self.ButtonSet[button_address].arg)
+                if button.fn:
+                    if list is type(button.arg):
+                        return button.fn(*button.arg)
+                    else:
+                        return button.fn(button.arg)
     
     def get_button_obj(address):
         """
@@ -197,6 +197,7 @@ class FunctionButton(Button):
                  y: int,
                  width: int,
                  height: int,
+                 address: tuple,
                  board_obj,
                  name: str | None = None,
                  radius: int = 0,
@@ -220,6 +221,7 @@ class FunctionButton(Button):
         self.width = width
         self.height = height
         self.radius = radius
+        self.address = address
         self.board_obj = board_obj
         self.display = board_obj.display
         self.touch = board_obj.touch
@@ -228,12 +230,20 @@ class FunctionButton(Button):
         self.label = label
         self.depressed = False
 
-        if default_font:
-            self.label_font = f'/art/{default_font}'
-        elif label_font:
+        if label_font:
             self.label_font = f'/art/{label_font}'
+        elif default_font:
+            self.label_font = f'/art/{default_font}'
         else:
             self.label_font = None
+        
+        try:
+            open(self.label_font)
+        except Exception as exc:
+            print(f"No font file called {self.label_font} found.")
+            print(exc)
+            self.label_font = None
+            
         
         if outline_color:
             self.outline_color = self.display.create_pen(*color_converter(outline_color))
@@ -272,27 +282,25 @@ class FunctionButton(Button):
         """Draws the elements of a Function button with correctly scaled symbol and text"""
         vector = PicoVector(self.display)
         if self.symbol_path:
+            png = PNG(self.display)
             try:
-                png = PNG(self.display)
-                try:
-                    png.open_file(self.symbol_path)
-                    png.decode(int(self.x+0.5*self.width-0.5*png.get_width()), int(self.y+0.5*self.height-0.5*png.get_height()))
-                except Exception as exc:
-                    print(f"No image file called {self.symbol_path} found.")
-                    print(exc)
+                png.open_file(self.symbol_path)
+                png.decode(int(self.x+0.5*self.width-0.5*png.get_width()), int(self.y+0.5*self.height-0.5*png.get_height()))
             except Exception as exc:
-                print(f"Image file {self.symbol_path} not found")
+                print(f"No image file called {self.symbol_path} found.")
                 print(exc)
             
         if self.label:
             self.display.set_pen(self.label_color)
             if self.label_font:
                 vector.set_font(self.label_font, int(0.33*self.height))
-            text_x, text_y, text_width, text_height = vector.measure_text(self.label)
-            if text_width > 0.9*self.width:
-                vector.set_font(self.label_font, int(0.9*self.width/text_width*0.33*self.height))
                 text_x, text_y, text_width, text_height = vector.measure_text(self.label)
-            vector.text(self.label, int(self.x+0.5*self.width-text_x-0.5*text_width), int(self.y+0.5*self.height+text_y+0.5*text_height))
+                if text_width > 0.9*self.width:
+                    vector.set_font(self.label_font, int(0.9*self.width/text_width*0.33*self.height))
+                    text_x, text_y, text_width, text_height = vector.measure_text(self.label)
+                vector.text(self.label, int(self.x+0.5*self.width-text_x-0.5*text_width), int(self.y+0.5*self.height+text_y+0.5*text_height))
+            else:
+                self.board_obj.display.text(self.label, int(self.x+5), int(self.y+0.5*self.height-5), int(self.width-10),3)
         self.display.set_pen(self.outline_color)
         shape = Polygon()
         shape.rectangle(self.x, self.y, self.width, self.height, corners=(self.radius, self.radius, self.radius, self.radius), stroke=3)

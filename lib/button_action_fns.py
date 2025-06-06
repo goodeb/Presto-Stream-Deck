@@ -26,7 +26,6 @@ def initialize_other_vars(kwargs):
     
     if other_vars:
         for var_name, var_value in other_vars.items():
-            print("assigning",var_name)
             globals()[var_name]=var_value
 
 def next_page(*arg):
