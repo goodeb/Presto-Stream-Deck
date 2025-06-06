@@ -9,7 +9,7 @@ ButtonSet.py 2025-06-02 v 1.0
 
 Author: Brent Goode
 
-Class libraries for ButtonSet and FunctionButton objects
+Main script for stream deck app
 
 """
 
@@ -38,7 +38,7 @@ buttons = ButtonSet(buttons_defs,
 buttons.redraw_page()
 
 while True:
-    buttons.touch_to_action()
+    action_result = buttons.touch_to_action()
     
     if ButtonSet.needs_redrawing:
         buttons.redraw_page()

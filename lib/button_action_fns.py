@@ -57,7 +57,7 @@ def sound_buzzer(tone: int,*arg):
     """Sounds the buzzer hardware object"""
     buzzer.set_tone(tone)
 
-def cycle_color(address,*arg):
+def cycle_through_colors(address,*arg):
     address = tuple([int(i) for i in address.split(',')])
     this_button = ButtonSet.get_button_obj(address)
     color_cycle.append(color_cycle.pop(0))
@@ -82,9 +82,7 @@ def http_post(url,query_data,*arg):
     """
     """
     try:
-        req = urequests.post(url, json = query_data)
-        result_data = json.loads(req.content.decode("utf-8"))
-        print(result_data)
+        request = urequests.post(url, json = query_data)
     except Exception as exc:
         print(exc)
 
@@ -92,9 +90,10 @@ def http_get(url,query_data,*arg):
     """
     """
     try:
-        req = urequests.get(url, json = query_data)
-        result_data = json.loads(req.content.decode("utf-8"))
+        request = urequests.get(url, json = query_data)
+        result_data = json.loads(request.content.decode("utf-8"))
         print(result_data)
+        return result_data
     except Exception as exc:
         print(exc)
 

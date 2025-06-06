@@ -197,8 +197,6 @@ class FunctionButton(Button):
                  y: int,
                  width: int,
                  height: int,
-                 row,
-                 column,
                  board_obj,
                  name: str | None = None,
                  radius: int = 0,
@@ -221,8 +219,6 @@ class FunctionButton(Button):
         self.y = y
         self.width = width
         self.height = height
-        self.row = row
-        self.column = column
         self.radius = radius
         self.board_obj = board_obj
         self.display = board_obj.display
@@ -305,7 +301,7 @@ class FunctionButton(Button):
     def redraw_button(self):
         """Redraws a single button after some aspect of its appearance has been updated"""
         self.draw_button()
-        self.board_obj.partial_update(int(self.x), int(self.y), int(self.width), int(self.height))
+        self.board_obj.partial_update(int(self.x)-1, int(self.y)-1, int(self.width)+2, int(self.height)+2)
 
     def just_pressed(self):
         """Returns True once and only once when a button transitions from not touched to touched"""
