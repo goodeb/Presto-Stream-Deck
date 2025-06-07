@@ -16,7 +16,9 @@ import urequests
 import json
 
 def initialize_other_vars(kwargs):
-    """"""
+    """
+    Required setup function for using the ButtonSet class with this script.
+    """
     other_vars = kwargs.get('other_vars')
     
     if other_vars.get('buzzer_pin'):
@@ -41,7 +43,11 @@ def previous_page(*arg):
         ButtonSet.needs_redrawing = True
 
 def jump_to_page(page_number: int,*arg):
-    """Change the current page to the page given as an input if possible"""
+    """
+    Change the current page to the page given as an input if possible
+    Args:
+        page_number: an integer for the page number to jump to.
+    """
     if ButtonSet.min_page <= page_number <= ButtonSet.max_page:
         ButtonSet.current_page = page_number
         ButtonSet.needs_redrawing = True
@@ -53,10 +59,20 @@ def light_backlight(color: str | list | tuple | None = None,* arg) -> None:
         board_obj.set_led_rgb(i,r,g,b)
 
 def sound_buzzer(tone: int,*arg):
-    """Sounds the buzzer hardware object"""
+    """
+    Sounds the buzzer hardware object
+    Args:
+        tone: the intensity of the buzzer sound. An int from 0 to 255
+    """
     buzzer.set_tone(tone)
 
 def cycle_through_colors(address,*arg):
+    """
+    Cycles the outline color of a button throng the global color_cycle list
+    Args:
+        address: a comma separated string of three ints with the page, row,
+            and column of the button
+    """
     address = tuple([int(i) for i in address.split(',')])
     this_button = ButtonSet.get_button_obj(address)
     color_cycle.append(color_cycle.pop(0))
@@ -64,14 +80,26 @@ def cycle_through_colors(address,*arg):
     this_button.redraw_button()
     
 def add_amount_to_label(address,amount,*arg):
-    """Changes the number label of a button at address by amount and redraws"""
+    """
+    Changes the number label of a button at address by amount and redraws
+    Args:
+        address: a comma separated string of three ints with the page, row,
+            and column of the button
+        amount: a signed int of the amount to add to the label
+    """
     address = tuple([int(i) for i in address.split(',')])
     this_button = ButtonSet.get_button_obj(address)
     this_button.label = str(int(this_button.label)+amount)
     this_button.redraw_button()
 
 def set_label(address,text,*arg):
-    """Sets the label of a button to be the input text and redraws"""
+    """
+    Sets the label of a button to be the input text and redraws
+    Args:
+        address: a comma separated string of three ints with the page, row,
+            and column of the button
+        text: the new text for the label
+    """
     address = tuple([int(i) for i in address.split(',')])
     this_button = ButtonSet.get_button_obj(address)
     this_button.label = str(text)
@@ -79,6 +107,10 @@ def set_label(address,text,*arg):
 
 def http_post(url,query_data,*arg):
     """
+    Makes a POST request to the give url
+    Args:
+        url: the web page address to send the request to
+        query_data: a dictionary object to send to the url
     """
     try:
         request = urequests.post(url, json = query_data)
@@ -87,6 +119,12 @@ def http_post(url,query_data,*arg):
 
 def http_get(url,query_data,*arg):
     """
+    Makes a GET request to the give url
+    Args:
+        url: the web page address to send the request to
+        query_data: a dictionary object to send to the url
+    Returns:
+        the request response object the web page sent
     """
     try:
         request = urequests.get(url, json = query_data)

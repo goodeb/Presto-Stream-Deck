@@ -35,11 +35,11 @@ buttons = ButtonSet(buttons_defs,
                     corner_radius,
                     other_vars=other_vars)
 
-buttons.redraw_page()
+buttons.draw_page()
 
 while True:
     action_result = buttons.touch_to_action()
     
     if ButtonSet.needs_redrawing:
-        buttons.redraw_page()
+        buttons.draw_page()
         ButtonSet.needs_redrawing = False
