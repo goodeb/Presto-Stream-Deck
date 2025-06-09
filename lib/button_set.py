@@ -249,10 +249,10 @@ class FunctionButton(Button):
         self.depressed = False
 
         try:
-            open(self.label_font)
+            open(f'/art/{label_font}')
             self.label_font = f'/art/{label_font}'
         except Exception as exc:
-            print(f"No font file called {self.label_font} found for button {name}. Using system font.")
+            print(f"No font file called {label_font} found for button {name}. Using system font.")
             print(exc)
             self.label_font = None
 
