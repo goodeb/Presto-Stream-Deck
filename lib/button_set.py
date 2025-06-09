@@ -189,6 +189,28 @@ class ButtonSet:
                 return_list.append(self.ButtonSet[button])
         return return_list
 
+    def next_page(*arg):
+        """Change the current page to the next page of buttons if possible"""
+        if ButtonSet.current_page < ButtonSet.max_page:
+            ButtonSet.current_page += 1
+            ButtonSet.needs_redrawing = True
+
+    def previous_page(*arg):
+        """Change the current page to the previous page of buttons if possible"""
+        if ButtonSet.current_page > ButtonSet.min_page:
+            ButtonSet.current_page -= 1
+            ButtonSet.needs_redrawing = True
+
+    def jump_to_page(page_number: int,*arg):
+        """
+        Change the current page to the page given as an input if possible
+        Args:
+            page_number: an integer for the page number to jump to.
+        """
+        if ButtonSet.min_page <= page_number <= ButtonSet.max_page:
+            ButtonSet.current_page = page_number
+            ButtonSet.needs_redrawing = True
+    
     def draw_page(self):
         """Draws a page of FunctionButton objects after a page change"""
         self.display.set_pen(self.display.create_pen(*color_converter(self.background_color)))
