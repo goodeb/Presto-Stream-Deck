@@ -15,13 +15,14 @@ Main script for stream deck app
 
 from presto import Presto
 from button_set import ButtonSet
-from utils import show_message, connect_wifi, read_input_file
+from utils import show_message, read_input_file
+import ezwifi
 
 board_obj = Presto(full_res=True)
 
 show_message(board_obj,"Loading...")
 
-#wifi = connect_wifi(board_obj)
+ezwifi.connect()
 
 buttons_defs, margin_ratio, default_color, background_color, \
     default_font, corner_radius, other_vars = read_input_file('button_defs.json')
