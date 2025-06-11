@@ -105,7 +105,7 @@ class ButtonSet:
                                                this_buttons_info.get('outline_color'),
                                                this_buttons_info.get('label_color'),
                                                this_buttons_info.get('symbol'),
-                                               this_buttons_info.get('fn'),
+                                               this_buttons_info.get('fn_name'),
                                                this_buttons_info.get('arg'))
         ButtonSet.buttons = self.ButtonSet
         
@@ -154,16 +154,6 @@ class ButtonSet:
                     else:
                         return button.fn(button.arg)
     
-    def get_button_obj(address):
-        """
-        Returns the FunctionButton object at address to allow another function to modify it
-        Args:
-            address: a tuple with three integers giving page, row, and column
-        Returns:
-            a FunctionButton object or None
-        """
-        return ButtonSet.buttons.get(address)
-
     def get_a_page(self,page_number: int) -> list:
         """
         Returns a list of FunctionButton objects that are all the button on the page given as an input
@@ -188,6 +178,16 @@ class ButtonSet:
             if button[0] == ButtonSet.current_page:
                 return_list.append(self.ButtonSet[button])
         return return_list
+
+    def get_button_obj(address):
+        """
+        Returns the FunctionButton object at address to allow another function to modify it
+        Args:
+            address: a tuple with three integers giving page, row, and column
+        Returns:
+            a FunctionButton object or None
+        """
+        return ButtonSet.buttons.get(address)
 
     def next_page(*arg):
         """Change the current page to the next page of buttons if possible"""
@@ -274,7 +274,7 @@ class FunctionButton(Button):
             open(f'/art/{label_font}')
             self.label_font = f'/art/{label_font}'
         except Exception as exc:
-            print(f"No font file called {label_font} found for button {name}. Using system font.")
+            print(f"No font file called {label_font} found for button {self.name}. Using system font.")
             print(exc)
             self.label_font = None
 
@@ -300,7 +300,7 @@ class FunctionButton(Button):
                 try:
                     self.fn = getattr(ButtonSet,fn_name)
                 except Exception as exc:
-                    print(f'There is no function named {fn_name} for button {name}.')
+                    print(f'There is no function named {fn_name} for button {self.name}.')
                     print(exc)
                     self.fn = None
         else:

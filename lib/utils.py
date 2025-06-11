@@ -52,18 +52,6 @@ def show_message(board_obj,label):
     board_obj.display.text(label, 5, 10, display_width-10, 6)
     board_obj.update()
  
-def connect_wifi(board_obj):
-    """Connects a Pimoroni pico device to wifi and handles errors"""
-    try:
-        wifi = board_obj.connect()
-        return wifi
-    except ValueError as e:
-        while True:
-            show_message(e)
-    except ImportError as e:
-        while True:
-            show_message(e)
-
 def read_input_file(json_file):
     """Reads the json input file for a presto-steam-deck project and parses 
         data into the correct form including custom vars for that project"""
