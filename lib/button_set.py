@@ -131,11 +131,12 @@ class ButtonSet:
         Returns:
             whatever the triggered function returns
         """
-        if self.ButtonSet[address].fn:
+        button = self.ButtonSet.get(address)
+        if button.fn:
             if list is type(button.arg):
-                return self.ButtonSet[address].fn(*self.ButtonSet[address].arg)
+                return button.fn(*button.arg)
             else:
-                return self.ButtonSet[address].fn(self.ButtonSet[address].arg)
+                return button.fn(button.arg)
 
     def touch_to_action(self) -> None:
         """
