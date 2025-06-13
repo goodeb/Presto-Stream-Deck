@@ -86,7 +86,174 @@ Buttons can be linked to actions by defining the function name of a button to ma
 Whatever other functions are defined in the ``button_action_fns.py`` file there is a required ``initialize_other_vars()`` function. This is needed to handle the custom global variables that can be defined in the general definitions part of the JSON file. The ``initialize_other_vars()`` function is also where to put initialization code for other unique aspects of an individual project. An example of how to do this is shown by the example of how buzzer is setup in the example code.
 
 # FunctionButton Class
-Coming Soon
+
+An extension to the Button class to link a button to a function, draw a rounded rectangle, add text, and add an image.
+
+Handles missing or default inputs, calculates sizes and positioning to center labels and symbols, and adds a rounded rectangle border. Contains methods for registering a button touch as a single debounced action either when a button is first touched or first released. Also contains methods for drawing and redrawing buttons.
+
+## Attributes
+
+x: int
+
+    screen position of the left edge of the button
+
+y: int
+
+    screen position of the top edge of the button
+
+width: int
+
+    width of the button
+
+height: int
+
+    height of the button
+
+address: tuple
+
+    page, row, and column address of this button
+
+board_obj: 
+
+    The Presto class object for the hardware interface
+
+name: str
+
+    Name of this button
+
+radius: int
+
+    Corner radius of the rounded rectangle
+
+label: str
+
+    Text that will be displayed on the button
+
+label_font: str
+
+    Name of font file to used for the label text
+
+color: str | tuple | list
+
+    color to be used for the text and outline
+
+outline_color: str | tuple | list
+
+    color to be used for the outline, overrides color
+
+label_color: str | tuple | list
+
+    color to be used for the label, overrides color
+
+symbol: str
+
+    name of a png file with symbol to be displayed
+
+fn_name: str
+
+    name of the function to be called when the button is pressed
+
+arg: str | list | dict | int | float
+
+    arguments to the function to be called when the button is pressed
+
+## Methods
+
+draw_button()
+
+    draws button elements to be ready for a screen update
+
+redraw_button()
+
+    draws button elements and calls a partial screen update around the button
+
+just_pressed()
+
+    returns true once on the first calling after a button is touched
+
+just_released()
+
+    returns true once on the first calling after a button is released
 
 # ButtonSet Class
-Coming Soon
+
+A collection of FunctionButton objects with addresses and dynamically calculated sizes
+    
+Takes a list of dictionaries with button definitions for FunctionButton objects and calculates their size and location and instantiates those objects. Provides methods for getting and drawing a page of buttons, changing pages, interacting with buttons through touch and direct addressing and retrieving individual button objects for external interaction with its attribute. Assumes that another script called button_action_fns.py will exists with an initialize_other_vars()function and other action functions for each of the buttons.
+
+## Class Variables
+
+current_page: int
+
+    Holds the current page of buttons being displayed
+
+max_page: int
+
+    number of the highest page in the buttons set
+
+min_page: int
+
+    number of the lowest page in the buttons set
+
+needs_redrawing: bool
+
+    indicates that the draw_page need to be called
+
+buttons: dict
+
+    externally accessible copy of te ButtonSet dict
+    
+## Attributes
+
+ButtonSet: dict
+
+    a dictionary of FunctionButton objects addressed by the tuple of page, row, and column numbers
+
+board_obj: 
+
+
+    The Presto class object for the hardware interface
+
+display:
+
+    The PicoGraphics class object for drawing on the screen
+
+background_color: str | list | tuple
+
+    The background screen color to be displayed behind buttons
+
+## Methods
+    
+touch_to_button_address() -> tuple
+
+    returns the address of a button that was just touched
+
+run_addressed_button(address: tuple)
+
+    riggers the action of the button at address
+
+touch_to_action()
+
+    triggers the action of the button that was just touched
+
+get_a_page(page_number: int) -> list
+
+    returns a list of all the FunctionButton objects on page_number
+
+draw_page()
+
+    clears the screen and draws the buttons on current_page
+
+##  Class Functions
+    
+next_page()
+
+    adds one to current page if in range and sets needs_redrawing to True
+
+previous_page()
+
+    subtracts one to current page if in range and sets needs_redrawing to True
+
+jump_to_page(page_number: int)
+
+    sets current page to page_number if in range and sets needs_redrawing to True
