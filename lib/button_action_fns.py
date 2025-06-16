@@ -1,6 +1,3 @@
-# SPDX-FileCopyrightText: 2025 Brent Goode
-# SPDX-License-Identifier: MIT
-
 """
 button_action_functions.py 2025-06-02 v 1.0
 
@@ -30,13 +27,13 @@ def initialize_other_vars(kwargs):
         for var_name, var_value in other_vars.items():
             globals()[var_name]=var_value
 
-def light_backlight(color: str | list | tuple | None = None,* arg) -> None:
+def light_backlight(color: str | list | tuple | None = None) -> None:
     """Lights Presto backlight to the color given by color"""
     r,g,b = color_converter(color)
     for i in range(7):
         board_obj.set_led_rgb(i,r,g,b)
 
-def sound_buzzer(tone: int,*arg):
+def sound_buzzer(tone: int):
     """
     Sounds the buzzer hardware object
     Args:
@@ -44,7 +41,7 @@ def sound_buzzer(tone: int,*arg):
     """
     buzzer.set_tone(tone)
 
-def cycle_through_colors(address,*arg):
+def cycle_through_colors(address):
     """
     Cycles the outline color of a button throng the global color_cycle list
     Args:
@@ -57,7 +54,7 @@ def cycle_through_colors(address,*arg):
     this_button.outline_color = board_obj.display.create_pen(*color_converter(color_cycle[0]))
     this_button.redraw_button()
     
-def add_amount_to_label(address,amount,*arg):
+def add_amount_to_label(address,amount):
     """
     Changes the number label of a button at address by amount and redraws
     Args:
@@ -70,7 +67,7 @@ def add_amount_to_label(address,amount,*arg):
     this_button.label = str(int(this_button.label)+amount)
     this_button.redraw_button()
 
-def set_label(address,text,*arg):
+def set_label(address,text):
     """
     Sets the label of a button to be the input text and redraws
     Args:
@@ -83,7 +80,7 @@ def set_label(address,text,*arg):
     this_button.label = str(text)
     this_button.redraw_button()
 
-def http_post(url,query_data,*arg):
+def http_post(url,query_data):
     """
     Makes a POST request to the give url
     Args:
@@ -95,7 +92,7 @@ def http_post(url,query_data,*arg):
     except Exception as exc:
         print(exc)
 
-def http_get(url,query_data,*arg):
+def http_get(url,query_data):
     """
     Makes a GET request to the give url
     Args:

@@ -17,7 +17,7 @@ Low Code project for creating custom stream deck controllers on a Pimoroni Prest
 
 # Overview
 
-This project provides a code base and example setup that turn the Pimoroni Preso into a stream deck like controller. The heart of each custom setup is the definitions JSON file. Everything about a button--its location, appearance, and the action it triggers--can be modified in this file. Overall setting such as the background color and default font are also defined in this file. Advanced users may want to add additional button functionality by adding functions to the button_action_fns.py library script, but changes to the other scripts in this project should not be needed.
+This project provides a code base and example setup that turn the Pimoroni Preso into a stream deck like controller. The heart of each custom setup is the definitions JSON file. Everything about a button--its location, appearance, and the action it triggers--can be modified in this file. Overall setting such as the background color and default font are also defined in this file. Users that want to add additional button functionality can simply add functions to the button_action_fns.py library script to implement this, but changes to the other scripts in this project should not be needed.
 
 The code for this project consists of the top level app script, a definitions JSON file, and a few library scripts with useful classes and helper functions. The two classes that make this project run are ``FunctionButton`` and ``ButtonSet``. ``FunctionButton`` extends the existing ``Button`` class to draw a box around each button's touch sensitive area and add optional graphic like button labels, images, and color changes. It also also adds debounced touch triggering through the ``just_pressed()`` and ``just_released()`` methods. Finally, it links each button to a function that defines the action that is taken when the button is pressed. ``ButtonSet`` parses the definitions, calculates the spacing for each page's layout and initializes the buttons. It has methods for converting a screen touch into a button action, and functions that buttons can link to to switch between pages of buttons.
 
@@ -81,7 +81,7 @@ Additionally header labels or text display boxes can be created by defining butt
 
 # Defining New Button Action Functions
 
-Buttons can be linked to actions by defining the function name of a button to match one of the functions contained in the file ``lib/button_action_fns.py``. Also, there are three functions in the ``ButtonSet`` Class that buttons can linked to to switch pages: ``next_page()``, ``previous_page()``, and ``jump_to_page()``. Several examples of other action functions are given in the example code, but new functions can be defined to add new functionality. To work correctly these functions have to match the standard signature. After any specific arguments a function needs, a generic ``*arg`` should be put in to prevent any runtime errors. Also, a function that doesn't take arguments should have the generic ``*arg`` put in as an argument for the same reason.
+Buttons can be linked to actions by defining the function name of a button to match one of the functions contained in the file ``lib/button_action_fns.py``. Also, there are three functions in the ``ButtonSet`` Class that buttons can linked to to switch pages: ``next_page()``, ``previous_page()``, and ``jump_to_page()``. Several examples of other action functions are given in the example code, but new functions can be defined to add new functionality.
 
 Whatever other functions are defined in the ``button_action_fns.py`` file there is a required ``initialize_other_vars()`` function. This is needed to handle the custom global variables that can be defined in the general definitions part of the JSON file. The ``initialize_other_vars()`` function is also where to put initialization code for other unique aspects of an individual project. An example of how to do this is shown by the example of how buzzer is setup in the example code.
 
@@ -93,87 +93,47 @@ Handles missing or default inputs, calculates sizes and positioning to center la
 
 ## Attributes
 
-x: int
+``x: int`` Screen position of the left edge of the button
 
-    screen position of the left edge of the button
+``y: int`` Screen position of the top edge of the button
 
-y: int
+``width: int`` Width of the button
 
-    screen position of the top edge of the button
+``height: int`` Height of the button
 
-width: int
+``address: tuple`` Page, row, and column address of this button
 
-    width of the button
+``board_obj: `` The Presto class object for the hardware interface
 
-height: int
+``name: str`` Name of this button
 
-    height of the button
+``radius: int`` Corner radius of the rounded rectangle
 
-address: tuple
+``label: str`` Text that will be displayed on the button
 
-    page, row, and column address of this button
+``label_font: str`` Name of font file to used for the label text
 
-board_obj: 
+``color: str | tuple | list`` Color to be used for the text and outline
 
-    The Presto class object for the hardware interface
+``outline_color: str | tuple | list`` Color to be used for the outline, overrides color
 
-name: str
+``label_color: str | tuple | list`` Color to be used for the label, overrides color
 
-    Name of this button
+``symbol: str`` Name of a png file with symbol to be displayed
 
-radius: int
+``fn_name: str`` Name of the function to be called when the button is pressed
 
-    Corner radius of the rounded rectangle
-
-label: str
-
-    Text that will be displayed on the button
-
-label_font: str
-
-    Name of font file to used for the label text
-
-color: str | tuple | list
-
-    color to be used for the text and outline
-
-outline_color: str | tuple | list
-
-    color to be used for the outline, overrides color
-
-label_color: str | tuple | list
-
-    color to be used for the label, overrides color
-
-symbol: str
-
-    name of a png file with symbol to be displayed
-
-fn_name: str
-
-    name of the function to be called when the button is pressed
-
-arg: str | list | dict | int | float
-
-    arguments to the function to be called when the button is pressed
+``arg: str | list | dict | int | float`` Arguments to the function to be called when the button is pressed
 
 ## Methods
 
-draw_button()
+``draw_button()`` Draws button elements to be ready for a screen update
 
-    draws button elements to be ready for a screen update
+``redraw_button()`` Draws button elements and calls a partial screen update around the button
 
-redraw_button()
+``just_pressed()`` Returns true once on the first calling after a button is touched
 
-    draws button elements and calls a partial screen update around the button
-
-just_pressed()
-
-    returns true once on the first calling after a button is touched
-
-just_released()
-
-    returns true once on the first calling after a button is released
+``just_released()`` Returns true once on the first calling after a button is released
 
 # ButtonSet Class
 
@@ -183,77 +143,42 @@ Takes a list of dictionaries with button definitions for FunctionButton objects 
 
 ## Class Variables
 
-current_page: int
+``current_page: int`` Holds the current page of buttons being displayed
 
-    Holds the current page of buttons being displayed
+``max_page: int`` Number of the highest page in the buttons set
 
-max_page: int
+``min_page: int`` Number of the lowest page in the buttons set
 
-    number of the highest page in the buttons set
+``needs_redrawing: bool`` Indicates that the draw_page need to be called
 
-min_page: int
-
-    number of the lowest page in the buttons set
-
-needs_redrawing: bool
-
-    indicates that the draw_page need to be called
-
-buttons: dict
-
-    externally accessible copy of te ButtonSet dict
+``buttons: dict`` Externally accessible copy of te ButtonSet dict
     
 ## Attributes
 
-ButtonSet: dict
+``ButtonSet: dict`` A dictionary of FunctionButton objects addressed by the tuple of page, row, and column numbers
 
-    a dictionary of FunctionButton objects addressed by the tuple of page, row, and column numbers
+``board_obj:`` The Presto class object for the hardware interface
 
-board_obj: 
+``display:`` The PicoGraphics class object for drawing on the screen
 
-
-    The Presto class object for the hardware interface
-
-display:
-
-    The PicoGraphics class object for drawing on the screen
-
-background_color: str | list | tuple
-
-    The background screen color to be displayed behind buttons
+``background_color: str | list | tuple`` The background screen color to be displayed behind buttons
 
 ## Methods
     
-touch_to_button_address() -> tuple
+``touch_to_button_address() -> tuple`` Returns the address of a button that was just touched
 
-    returns the address of a button that was just touched
+``run_addressed_button(address: tuple)`` Riggers the action of the button at address
 
-run_addressed_button(address: tuple)
+``touch_to_action()`` Triggers the action of the button that was just touched
 
-    riggers the action of the button at address
+``get_a_page(page_number: int) -> list`` Returns a list of all the FunctionButton objects on page_number
 
-touch_to_action()
-
-    triggers the action of the button that was just touched
-
-get_a_page(page_number: int) -> list
-
-    returns a list of all the FunctionButton objects on page_number
-
-draw_page()
-
-    clears the screen and draws the buttons on current_page
+``draw_page()`` Clears the screen and draws the buttons on current_page
 
 ##  Class Functions
     
-next_page()
+``next_page()`` Adds one to current page if in range and sets needs_redrawing to True
 
-    adds one to current page if in range and sets needs_redrawing to True
+``previous_page()`` Subtracts one to current page if in range and sets needs_redrawing to True
 
-previous_page()
-
-    subtracts one to current page if in range and sets needs_redrawing to True
-
-jump_to_page(page_number: int)
-
-    sets current page to page_number if in range and sets needs_redrawing to True
+``jump_to_page(page_number: int)`` Sets current page to page_number if in range and sets needs_redrawing to True

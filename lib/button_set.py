@@ -1,6 +1,3 @@
-# SPDX-FileCopyrightText: 2025 Brent Goode
-# SPDX-License-Identifier: MIT
-
 """
 ButtonSet.py 2025-06-02 v 1.0
 
@@ -176,10 +173,13 @@ class ButtonSet:
         """
         button = self.ButtonSet.get(address)
         if button.fn:
-            if list is type(button.arg):
-                return button.fn(*button.arg)
+            if button.arg:
+                if list is type(button.arg):
+                    return button.fn(*button.arg)
+                else:
+                    return button.fn(button.arg)
             else:
-                return button.fn(button.arg)
+                return button.fn()
 
     def touch_to_action(self) -> None:
         """
@@ -193,11 +193,14 @@ class ButtonSet:
         for button in self.get_current_page():
             if button.just_pressed():
                 if button.fn:
-                    if list is type(button.arg):
-                        return button.fn(*button.arg)
+                    if button.arg:
+                        if list is type(button.arg):
+                            return button.fn(*button.arg)
+                        else:
+                            return button.fn(button.arg)
                     else:
-                        return button.fn(button.arg)
-    
+                        return button.fn()
+
     def get_a_page(self,page_number: int) -> list:
         """
         Returns a list of FunctionButton objects that are all the button on the page given as an input
@@ -242,19 +245,19 @@ class ButtonSet:
             button.draw_button()
         self.board_obj.update()
     
-    def next_page(*arg):
+    def next_page():
         """Change the current page to the next page of buttons if possible"""
         if ButtonSet.current_page < ButtonSet.max_page:
             ButtonSet.current_page += 1
             ButtonSet.needs_redrawing = True
 
-    def previous_page(*arg):
+    def previous_page():
         """Change the current page to the previous page of buttons if possible"""
         if ButtonSet.current_page > ButtonSet.min_page:
             ButtonSet.current_page -= 1
             ButtonSet.needs_redrawing = True
 
-    def jump_to_page(page_number: int,*arg):
+    def jump_to_page(page_number: int):
         """
         Change the current page to the page given as an input if possible
         Args:

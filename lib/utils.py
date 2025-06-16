@@ -1,6 +1,3 @@
-# SPDX-FileCopyrightText: 2025 Brent Goode
-# SPDX-License-Identifier: MIT
-
 """
 utils.py 2025-06-02 v 1.0
 
