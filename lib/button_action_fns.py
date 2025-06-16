@@ -9,7 +9,7 @@ This is how the custom functionality for each set up is implemented
 """
 
 from utils import color_converter
-import urequests
+import requests
 import json
 
 def initialize_other_vars(kwargs):
@@ -88,7 +88,7 @@ def http_post(url,query_data):
         query_data: a dictionary object to send to the url
     """
     try:
-        request = urequests.post(url, json = query_data)
+        request = requests.post(url, json = query_data)
     except Exception as exc:
         print(exc)
 
@@ -102,8 +102,8 @@ def http_get(url,query_data):
         the request response object the web page sent
     """
     try:
-        request = urequests.get(url, json = query_data)
-        result_data = json.loads(request.content.decode("utf-8"))
+        request = requests.get(url, json = query_data)
+        result_data = json.loads(request.content.decode(request.encoding))
         print(result_data)
         return result_data
     except Exception as exc:
