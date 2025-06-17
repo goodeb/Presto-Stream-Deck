@@ -17,7 +17,7 @@ Low Code project for creating custom stream deck controllers on a Pimoroni Prest
 
 # Overview
 
-This project provides a code base and example setup that turn the Pimoroni Preso into a stream deck like controller. The heart of each custom setup is the definitions JSON file. Everything about a button--its location, appearance, and the action it triggers--can be modified in this file. Overall setting such as the background color and default font are also defined in this file. Users that want to add additional button functionality can simply add functions to the button_action_fns.py library script to implement this, but changes to the other scripts in this project should not be needed.
+This project provides a code base and example setup that turn the Pimoroni Preso into a stream deck like controller. The heart of each custom setup is the definitions JSON file, ``button_defs.json``. Everything about a button--its location, appearance, and the action it triggers--can be modified in this file. Overall setting such as the background color and default font are also defined in this file. Users that want to add additional button functionality can simply add functions to the ``button_action_fns.py`` library script, but changes to the other scripts in this project should not be needed.
 
 The code for this project consists of the top level app script, a definitions JSON file, and a few library scripts with useful classes and helper functions. The two classes that make this project run are ``FunctionButton`` and ``ButtonSet``. ``FunctionButton`` extends the existing ``Button`` class to draw a box around each button's touch sensitive area and add optional graphic like button labels, images, and color changes. It also also adds debounced touch triggering through the ``just_pressed()`` and ``just_released()`` methods. Finally, it links each button to a function that defines the action that is taken when the button is pressed. ``ButtonSet`` parses the definitions, calculates the spacing for each page's layout and initializes the buttons. It has methods for converting a screen touch into a button action, and functions that buttons can link to to switch between pages of buttons.
 
@@ -29,28 +29,27 @@ The first page is a straight forward page full of buttons. Each has a custom lab
 
 The second page gives examples of adding symbols and controlling the spacing of buttons with a buffer button. It also the first example of custom variables and the use of the ``initialize_other_vars()`` function. In this case it is used to set up the Presto's builtin piezo buzzer so that buttons can turn it on and off.
 
-The final page is the most complex example. The center button has labels and text at the same time. The buttons also trigger actions that change the of the center button. It also shows examples of more complicated function arguments.
+The final page is the most complex example. The center button has labels and text at the same time. The buttons also trigger actions that change the center button. It also shows examples of more complicated function arguments.
 
 # Customizing Buttons
 
-Each button is separately defined by a JSON object in the list under ``button_defs``. These button objects have a mix of required and optional fields.
+Each button is separately defined by a JSON object in the list under ``button_defs``. These button definitions have a mix of required and optional fields.
 
 ## Required Inputs
 * page: The number of the page this button is on
 * row: The number of the row on a page this button is on
 * column: The number of the column in the row this button is on
 
-Row and column numbers must be adjacent, start at 0, and be positive. Page numbers can be both positive and negative, but the default starting page will be zero. Button definitions do not have to be in order of page, row, and column in the JSON file, but it may be easier to list them in this way to make finding them later easier. 
+Row and column numbers must be adjacent, start at 0, and be positive. Page numbers can be both positive and negative, but the default starting page will be zero. Button definitions do not have to be in order of page, row, and column in the JSON file, but it may be easier to find them later if they are.
 
 ## Optional Inputs
 * name: Not used except in some error messages, but useful for finding a button definitions in the file
-* radius: The corner radius of the rounded rectangle that will be drawn around the button. Make this 0 for square corners. Default value is 14
 * label: The text that will be displayed on the button
 * label_font: The font file in the ``art`` directory used for the label text. If given this overrides the default font of the rest of the project
 * color: Color used for the label text and outline of the button. If not given the default will be white
 * outline_color: Color used for the outline of the button. This will override color to make the outline and label have different colors
 * label_color: Color used for the label text of the button. This will override color to make the outline and label have different colors
-* symbol: The name of a .png file in the ``art/`` directory to be displayed on the button. 90x90 images work well. Symbol is displayed behind any text
+* symbol: The name of a .png file in the ``art/`` directory to be displayed on the button. 90x90 images work well. This is displayed behind any text
 * fn_name: The name of the function that will be triggered when the button is pressed. Should be one of the functions defined in ``button_action_fns.py``, or ``next_page()``, ``previous_page()``, or ``jump_to_a_page()``
 * arg: The argument for the function, or arguments if given as a list. More on arguments in the next section
 
@@ -83,9 +82,18 @@ Additionally header labels or text display boxes can be created by defining butt
 
 Buttons can be linked to actions by defining the function name of a button to match one of the functions contained in the file ``lib/button_action_fns.py``. Also, there are three functions in the ``ButtonSet`` Class that buttons can linked to to switch pages: ``next_page()``, ``previous_page()``, and ``jump_to_page()``. Several examples of other action functions are given in the example code, but new functions can be defined to add new functionality.
 
-Whatever other functions are defined in the ``button_action_fns.py`` file there is a required ``initialize_other_vars()`` function. This is needed to handle the custom global variables that can be defined in the general definitions part of the JSON file. The ``initialize_other_vars()`` function is also where to put initialization code for other unique aspects of an individual project. An example of how to do this is shown by the example of how buzzer is setup in the example code.
+Async functions can also be defined, but they need to be encapsulated in a non-async function that calls them with ``asyncio.run()``. So for example
+```
+def example_fn():
+    async def _example_fn():
+        async with aiohttp.ClientSession() as session:
+            ...
+        return return_data
+    return asyncio.run(_example_fn())
+```
+Whatever other functions are defined in the ``button_action_fns.py`` file there is a required ``initialize_other_vars()`` function. This is needed to handle the custom global variables that can be defined in the general definitions part of the JSON file. The ``initialize_other_vars()`` function is also where to put initialization code for other unique aspects of an individual project. An example of how to do this is shown by how the buzzer is setup in the example code.
 
-# FunctionButton Class
+# ``FunctionButton`` Class
 
 An extension to the Button class to link a button to a function, draw a rounded rectangle, add text, and add an image.
 
@@ -135,11 +143,11 @@ Handles missing or default inputs, calculates sizes and positioning to center la
 
 ``just_released()`` Returns true once on the first calling after a button is released
 
-# ButtonSet Class
+# ``ButtonSet`` Class
 
 A collection of FunctionButton objects with addresses and dynamically calculated sizes
     
-Takes a list of dictionaries with button definitions for FunctionButton objects and calculates their size and location and instantiates those objects. Provides methods for getting and drawing a page of buttons, changing pages, interacting with buttons through touch and direct addressing and retrieving individual button objects for external interaction with its attribute. Assumes that another script called button_action_fns.py will exists with an initialize_other_vars()function and other action functions for each of the buttons.
+Takes a list of dictionaries with button definitions for FunctionButton objects and calculates their size and location and instantiates those objects. Provides methods for getting and drawing a page of buttons, changing pages, interacting with buttons through touch and direct addressing and retrieving individual button objects for external interaction with its attribute. Assumes that another script called ``button_action_fns.py`` will exists with an ``initialize_other_vars()`` function and other action functions for each of the buttons.
 
 ## Class Variables
 

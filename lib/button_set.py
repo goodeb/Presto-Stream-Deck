@@ -189,17 +189,15 @@ class ButtonSet:
         Returns:
             whatever the triggered function returns
         """
-        button_address = None
         for button in self.get_current_page():
-            if button.just_pressed():
-                if button.fn:
-                    if button.arg:
-                        if list is type(button.arg):
-                            return button.fn(*button.arg)
-                        else:
-                            return button.fn(button.arg)
+            if button.just_pressed() and button.fn:
+                if button.arg:
+                    if list is type(button.arg):
+                        return button.fn(*button.arg)
                     else:
-                        return button.fn()
+                        return button.fn(button.arg)
+                else:
+                    return button.fn()
 
     def get_a_page(self,page_number: int) -> list:
         """
