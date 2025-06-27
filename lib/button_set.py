@@ -93,8 +93,6 @@ class ButtonSet:
         button_action_fns.board_obj = board_obj
         button_action_fns.ButtonSet = ButtonSet
         
-        button_action_fns.initialize_other_vars(kwargs)
-        
         display_width, display_height = self.display.get_bounds()
         
         if background_color:
@@ -123,7 +121,9 @@ class ButtonSet:
                 button_height = display_height/(n + margin_ratio*n + margin_ratio)
                 gap = button_height * margin_ratio
                 if not corner_radius:
-                    corner_radius = gap
+                    this_page_corner_radius = gap
+                else:
+                    this_page_corner_radius = corner_radius
                 for row in buttons_seen[page]:
                     m = len(buttons_seen[page][row])
                     button_width = (display_width - (m+1)*gap)/m
@@ -138,7 +138,7 @@ class ButtonSet:
                                                address,
                                                board_obj,
                                                this_buttons_info.get('name'),
-                                               corner_radius,
+                                               this_page_corner_radius,
                                                this_buttons_info.get('label'),
                                                this_buttons_info.get('label_font',default_font),
                                                this_buttons_info.get('color',default_color),
@@ -148,6 +148,7 @@ class ButtonSet:
                                                this_buttons_info.get('fn_name'),
                                                this_buttons_info.get('arg'))
         ButtonSet.buttons = self.ButtonSet
+        button_action_fns.initialize_other_vars(kwargs)
         
     def touch_to_button_address(self) -> tuple | None:
         """
@@ -398,6 +399,16 @@ class FunctionButton(Button):
     def draw_button(self):
         """Draws the elements of a Function button with correctly scaled symbol and text"""
         vector = PicoVector(self.display)
+        self.display.set_pen(self.outline_color)
+        shape = Polygon()
+        shape.rectangle(self.x, 
+                        self.y,
+                        self.width, 
+                        self.height, 
+                        corners=(self.radius, self.radius, self.radius, self.radius), 
+                        stroke=3)
+        vector.draw(shape)
+        
         if self.symbol_path:
             png = PNG(self.display)
             try:
@@ -436,15 +447,6 @@ class FunctionButton(Button):
                                             int(self.y+0.5*self.height-5),
                                             int(self.width-10),
                                             3)
-        self.display.set_pen(self.outline_color)
-        shape = Polygon()
-        shape.rectangle(self.x, 
-                        self.y,
-                        self.width, 
-                        self.height, 
-                        corners=(self.radius, self.radius, self.radius, self.radius), 
-                        stroke=3)
-        vector.draw(shape)
 
     def redraw_button(self):
         """Redraws a single button after some aspect of its appearance has been updated"""
