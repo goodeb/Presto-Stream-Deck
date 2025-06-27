@@ -90,7 +90,7 @@
         "row":2,
         "column":2,
         "fn_name":"next_page",
-        "label":"next page",
+        "label":"next\npage",
         "color":"white"
     },
     {
@@ -210,7 +210,7 @@
         "row":2,
         "column":0,
         "fn_name":"previous_page",
-        "label":"last page",
+        "label":"last\npage",
         "color":"white"
     },
     {

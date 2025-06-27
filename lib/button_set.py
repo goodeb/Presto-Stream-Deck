@@ -8,7 +8,7 @@ Class libraries for ButtonSet and FunctionButton objects
 """
 
 import button_action_fns
-from picovector import PicoVector, Polygon
+from picovector import PicoVector, Polygon, HALIGN_CENTER
 from touch import Button
 from pngdec import PNG
 from utils import color_converter
@@ -411,13 +411,25 @@ class FunctionButton(Button):
             self.display.set_pen(self.label_color)
             if self.label_font:
                 vector.set_font(self.label_font, int(0.33*self.height))
+                vector.set_font_align(HALIGN_CENTER)
                 text_x, text_y, text_width, text_height = vector.measure_text(self.label)
-                if text_width > 0.9*self.width:
+                if text_height > 0.9*self.height:
+                    vector.set_font(self.label_font, int(0.85*self.height/text_height*0.33*self.height))
+                    text_x, text_y, text_width, text_height = vector.measure_text(self.label)
+                first_line = self.label.split('\n')[0]
+                first_line_x, first_line_y, first_line_width, first_line_height = vector.measure_text(first_line)
+                last_line = self.label.split('\n')[-1]
+                last_line_x, last_line_y, last_line_width, last_line_height = vector.measure_text(last_line)
+                text_y_offset = int(0.5*text_height - first_line_height - last_line_y)
+                if text_width > 0.9*self.width and '\n' not in self.label:
                     vector.set_font(self.label_font, int(0.9*self.width/text_width*0.33*self.height))
                     text_x, text_y, text_width, text_height = vector.measure_text(self.label)
+                    text_y_offset = int(-0.5*text_height - text_y)
                 vector.text(self.label, 
-                            int(self.x+0.5*self.width-text_x-0.5*text_width),
-                            int(self.y+0.5*self.height+text_y+0.5*text_height))
+                            int(self.x+0.05*self.width),
+                            int(self.y+0.5*self.height-text_y_offset),
+                            0,
+                            int(0.9*self.width))
             else:
                 self.board_obj.display.text(self.label,
                                             int(self.x+5),
