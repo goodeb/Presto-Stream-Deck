@@ -174,7 +174,7 @@ class ButtonSet:
         """
         button = self.ButtonSet.get(address)
         if button.fn:
-            if button.arg:
+            if button.arg is not None:
                 if list is type(button.arg):
                     return button.fn(*button.arg)
                 else:
@@ -192,7 +192,7 @@ class ButtonSet:
         """
         for button in self.get_current_page():
             if button.just_pressed() and button.fn:
-                if button.arg:
+                if button.arg is not None:
                     if list is type(button.arg):
                         return button.fn(*button.arg)
                     else:
@@ -359,7 +359,7 @@ class FunctionButton(Button):
         self.arg = arg
         self.label = label
         self.depressed = False
-
+        
         try:
             open(f'/art/{label_font}')
             self.label_font = f'/art/{label_font}'
@@ -427,20 +427,21 @@ class FunctionButton(Button):
                 if text_height > 0.9*self.height:
                     vector.set_font(self.label_font, int(0.85*self.height/text_height*0.33*self.height))
                     text_x, text_y, text_width, text_height = vector.measure_text(self.label)
+                text_x, text_y, text_width, text_height = vector.measure_text(self.label)
+                if text_width > 0.9*self.width:
+                    vector.set_font(self.label_font, int(0.85*self.width/text_width*0.33*self.height))
+                    text_x, text_y, text_width, text_height = vector.measure_text(self.label)
+                    text_y_offset = int(-0.5*text_height - text_y)
                 first_line = self.label.split('\n')[0]
                 first_line_x, first_line_y, first_line_width, first_line_height = vector.measure_text(first_line)
                 last_line = self.label.split('\n')[-1]
                 last_line_x, last_line_y, last_line_width, last_line_height = vector.measure_text(last_line)
                 text_y_offset = int(0.5*text_height - first_line_height - last_line_y)
-                if text_width > 0.9*self.width and '\n' not in self.label:
-                    vector.set_font(self.label_font, int(0.9*self.width/text_width*0.33*self.height))
-                    text_x, text_y, text_width, text_height = vector.measure_text(self.label)
-                    text_y_offset = int(-0.5*text_height - text_y)
                 vector.text(self.label, 
-                            int(self.x+0.05*self.width),
+                            int(self.x-0.5*text_width+0.5*self.width-2),
                             int(self.y+0.5*self.height-text_y_offset),
                             0,
-                            int(0.9*self.width))
+                            int(text_width)+4)
             else:
                 self.board_obj.display.text(self.label,
                                             int(self.x+5),
