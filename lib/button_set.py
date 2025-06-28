@@ -431,17 +431,16 @@ class FunctionButton(Button):
                 if text_width > 0.9*self.width:
                     vector.set_font(self.label_font, int(0.85*self.width/text_width*0.33*self.height))
                     text_x, text_y, text_width, text_height = vector.measure_text(self.label)
-                    text_y_offset = int(-0.5*text_height - text_y)
                 first_line = self.label.split('\n')[0]
                 first_line_x, first_line_y, first_line_width, first_line_height = vector.measure_text(first_line)
                 last_line = self.label.split('\n')[-1]
                 last_line_x, last_line_y, last_line_width, last_line_height = vector.measure_text(last_line)
                 text_y_offset = int(0.5*text_height - first_line_height - last_line_y)
                 vector.text(self.label, 
-                            int(self.x-0.5*text_width+0.5*self.width-2),
+                            int(self.x+0.5*self.width-0.52*text_width),
                             int(self.y+0.5*self.height-text_y_offset),
                             0,
-                            int(text_width)+4)
+                            int(1.04*text_width))
             else:
                 self.board_obj.display.text(self.label,
                                             int(self.x+5),
